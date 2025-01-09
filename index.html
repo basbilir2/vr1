@@ -14,18 +14,18 @@
 
           marker.addEventListener("markerFound", () => {
             if (!isModelLocked) {
-              // Markerın dünya pozisyonunu ve rotasyonunu al
+              // Markerın dünya koordinatlarını ve rotasyonunu al
               const worldPosition = new THREE.Vector3();
-              const worldRotation = new THREE.Quaternion();
+              const worldQuaternion = new THREE.Quaternion();
 
               marker.object3D.getWorldPosition(worldPosition);
-              marker.object3D.getWorldQuaternion(worldRotation);
+              marker.object3D.getWorldQuaternion(worldQuaternion);
 
-              // Modeli dünya sahnesine ekle
+              // Modeli dünya koordinatlarında sabitle
               model.object3D.position.copy(worldPosition);
-              model.object3D.quaternion.copy(worldRotation);
+              model.object3D.quaternion.copy(worldQuaternion);
 
-              // Marker ile bağı kes ve dünya sahnesine taşı
+              // Marker ile bağlantısını tamamen kopar
               document.querySelector("a-scene").object3D.add(model.object3D);
 
               // Modeli görünür yap
@@ -46,7 +46,6 @@
         url="https://basbilir2.github.io/vr1/pattern-marker.patt"
         markerhandler
       >
-        <!-- Marker Placeholder -->
         <a-entity id="placeholder" position="0 0 0" visible="false"></a-entity>
       </a-marker>
 
