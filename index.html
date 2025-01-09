@@ -2,53 +2,56 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <title>Marker Persistent AR</title>
+    <title>Persistent Object Without Marker Dependency</title>
     <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
     <script src="https://cdn.rawgit.com/jeromeetienne/ar.js/2.2.1/aframe/build/aframe-ar.min.js"></script>
+    <script>
+      AFRAME.registerComponent("markerhandler", {
+        init: function () {
+          const marker = this.el;
+          const model = document.querySelector("#model");
+
+          // Marker bulunduğunda
+          marker.addEventListener("markerFound", () => {
+            if (!model.getAttribute("position").x) {
+              // Marker bulunduğunda modelin pozisyonunu koru
+              const markerPosition = marker.object3D.position;
+              model.setAttribute("position", {
+                x: markerPosition.x,
+                y: markerPosition.y,
+                z: markerPosition.z,
+              });
+              model.setAttribute("visible", "true");
+            }
+          });
+        },
+      });
+    </script>
   </head>
-  <body style="margin: 0px; overflow: hidden;">
+  <body style="margin: 0; overflow: hidden;">
     <a-scene embedded arjs>
       <!-- Marker -->
-      <a-marker preset="custom" type="pattern" url="https://basbilir2.github.io/vr1/pattern-marker.patt" id="marker">
-        <!-- 3D Model -->
-        <a-entity
-          gltf-model="https://basbilir2.github.io/vr1/cow.glb"
-          scale="0.3 0.3 0.3"
-          id="model">
-        </a-entity>
+      <a-marker
+        preset="custom"
+        type="pattern"
+        url="https://basbilir2.github.io/vr1/pattern-marker.patt"
+        markerhandler
+      >
+        <!-- Marker içindeki modeli devre dışı bırak -->
+        <a-entity id="placeholder" position="0 0 0" visible="false"></a-entity>
       </a-marker>
+
+      <!-- 3D Model -->
+      <a-entity
+        id="model"
+        gltf-model="https://basbilir2.github.io/vr1/cow.glb"
+        scale="0.3 0.3 0.3"
+        position="0 0 0"
+        visible="false"
+      ></a-entity>
 
       <!-- Kamera -->
       <a-entity camera></a-entity>
     </a-scene>
-
-    <script>
-      const marker = document.querySelector('#marker');
-      const model = document.querySelector('#model');
-
-      let isMarkerVisible = false;
-
-      marker.addEventListener('markerFound', () => {
-        isMarkerVisible = true;
-        console.log('Marker found');
-      });
-
-      marker.addEventListener('markerLost', () => {
-        isMarkerVisible = false;
-        console.log('Marker lost');
-      });
-
-      // Pozisyonu güncel tut
-      setInterval(() => {
-        if (!isMarkerVisible) {
-          // Marker kaybolsa bile modeli yerinde bırak
-          const markerPosition = marker.object3D.position;
-          const markerRotation = marker.object3D.rotation;
-
-          model.object3D.position.copy(markerPosition);
-          model.object3D.rotation.copy(markerRotation);
-        }
-      }, 100);
-    </script>
   </body>
 </html>
