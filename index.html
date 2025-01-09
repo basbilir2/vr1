@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>AR Cow Viewer</title>
     <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
-    <script src="https://cdn.rawgit.com/jeromeetienne/ar.js/2.2.1/aframe/build/aframe-ar.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/jeromeetienne/ar.js/aframe/build/aframe-ar.min.js"></script>
     <style>
       body {
         margin: 0;
@@ -25,7 +25,6 @@
         sourceType: webcam;
         debugUIEnabled: false;
         detectionMode: mono_and_matrix;
-        matrixCodeType: 3x3;
         trackingMethod: best;">
       
       <!-- Marker -->
@@ -33,16 +32,17 @@
         preset="custom"
         type="pattern"
         url="https://basbilir2.github.io/vr1/pattern-marker.patt">
+        
         <!-- İnek Modeli -->
         <a-entity
           gltf-model="https://basbilir2.github.io/vr1/cow.glb"
+          scale="0.15 0.15 0.15"
           position="0 0 0"
-          scale="0.1 0.1 0.1"
-          rotation="0 180 0"  <!-- İnek bize doğru bakacak şekilde döndürüldü -->
-          animation="property: position; to: 0 0 0; dur: 500; easing: easeInOutQuad; loop: false;"></a-entity>
+          rotation="0 180 0">
+        </a-entity>
       </a-marker>
       
-      <!-- Marker'ın stabil kalması ve takip modunu iyileştirmek -->
+      <!-- Kamera -->
       <a-entity camera></a-entity>
     </a-scene>
   </body>
