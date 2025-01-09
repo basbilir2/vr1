@@ -1,28 +1,27 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
-    <meta charset="utf-8">
-    <title>Stable Marker-Based AR</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AR Cow Viewer</title>
     <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
     <script src="https://cdn.rawgit.com/jeromeetienne/ar.js/2.2.1/aframe/build/aframe-ar.min.js"></script>
   </head>
-  <body style="margin: 0px; overflow: hidden;">
-    <a-scene
-      embedded
-      arjs="sourceType: webcam; detectionMode: mono; matrixMode: modelViewMatrix; debugUIEnabled: false;">
-      
+  <body style="margin: 0; overflow: hidden;">
+    <a-scene embedded arjs>
       <!-- Marker -->
       <a-marker preset="custom" type="pattern" url="https://basbilir2.github.io/vr1/pattern-marker.patt">
-        <!-- 3D Model -->
+        <!-- İnek Modeli -->
         <a-entity
           gltf-model="https://basbilir2.github.io/vr1/cow.glb"
           scale="0.2 0.2 0.2"
-          position="0 0 0">
+          position="0 0 0"
+          rotation="0 180 0"> <!-- Y ekseninde 180 derece dönme: İnek size doğru baksın -->
         </a-entity>
       </a-marker>
 
       <!-- Kamera -->
-      <a-entity camera position="0 0 5"></a-entity>
+      <a-entity camera></a-entity>
     </a-scene>
   </body>
 </html>
