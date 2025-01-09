@@ -1,24 +1,24 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
   <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>AR.js Marker-based Example</title>
+    <meta charset="utf-8">
+    <title>Marker-Based AR</title>
     <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/gh/jeromeetienne/ar.js/aframe/build/aframe-ar.min.js"></script>
+    <script src="https://cdn.rawgit.com/jeromeetienne/ar.js/2.2.1/aframe/build/aframe-ar.min.js"></script>
   </head>
-  <body style="margin: 0; overflow: hidden;">
-    <!-- AR.js Scene -->
+  <body style="margin : 0px; overflow: hidden;">
     <a-scene embedded arjs>
       <!-- Marker -->
-      <a-marker preset="hiro">
-        <!-- GLB Model -->
+      <a-marker preset="custom" type="pattern" url="https://basbilir2.github.io/vr1/pattern-marker.patt">
+        <!-- 3D Model -->
         <a-entity
           gltf-model="https://basbilir2.github.io/vr1/cow.glb"
-          scale="0.1 0.1 0.1"
-          position="0 0 0"
-        ></a-entity>
+          scale="0.5 0.5 0.5"
+          position="0 0 0">
+        </a-entity>
       </a-marker>
+
+      <!-- Camera -->
       <a-entity camera></a-entity>
     </a-scene>
   </body>
