@@ -15,8 +15,7 @@
           gltf-model="https://basbilir2.github.io/vr1/cow.glb"
           scale="0.3 0.3 0.3"
           position="0 0 0"
-          rotation="0 180 0"
-          visible="false">
+          rotation="0 180 0">
         </a-entity>
       </a-marker>
 
@@ -25,17 +24,28 @@
     </a-scene>
 
     <script>
-      // Marker algılandığında modeli görünür yap
+      // Marker olaylarını dinle
       const marker = document.querySelector('a-marker');
       const cowModel = document.querySelector('#cow-model');
+      let isModelLocked = false; // Model sabitlenmiş mi kontrolü
 
       marker.addEventListener('markerFound', () => {
-        cowModel.setAttribute('visible', true); // Modeli görünür yap
+        if (!isModelLocked) {
+          // Marker algılandığında modeli dünya koordinatlarına taşı
+          const position = cowModel.object3D.position.clone(); // Pozisyonu kaydet
+          const rotation = cowModel.object3D.rotation.clone(); // Rotasyonu kaydet
+          cowModel.setAttribute('position', position);
+          cowModel.setAttribute('rotation', rotation);
+          cowModel.setAttribute('visible', true);
+
+          // Modeli marker'dan kaldır, dünya koordinatlarında sabitle
+          cowModel.removeAttribute('arjs-anchor');
+          isModelLocked = true;
+        }
       });
 
       marker.addEventListener('markerLost', () => {
-        // Marker kaybolsa bile modeli sabit tut
-        cowModel.setAttribute('visible', true);
+        // Marker kaybolduğunda model yok olmamaya devam edecek
       });
     </script>
   </body>
