@@ -2,7 +2,7 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <title>Marker-Based AR</title>
+    <title>Persistent AR Model</title>
     <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
     <script src="https://cdn.rawgit.com/jeromeetienne/ar.js/2.2.1/aframe/build/aframe-ar.min.js"></script>
   </head>
@@ -24,28 +24,32 @@
     </a-scene>
 
     <script>
-      // Marker olaylarını dinle
       const marker = document.querySelector('a-marker');
       const cowModel = document.querySelector('#cow-model');
-      let isModelLocked = false; // Model sabitlenmiş mi kontrolü
+
+      let modelLocked = false; // Model sabitlenip sabitlenmediği
 
       marker.addEventListener('markerFound', () => {
-        if (!isModelLocked) {
-          // Marker algılandığında modeli dünya koordinatlarına taşı
-          const position = cowModel.object3D.position.clone(); // Pozisyonu kaydet
-          const rotation = cowModel.object3D.rotation.clone(); // Rotasyonu kaydet
-          cowModel.setAttribute('position', position);
-          cowModel.setAttribute('rotation', rotation);
-          cowModel.setAttribute('visible', true);
+        if (!modelLocked) {
+          // Marker bulunduğunda modeli dünya koordinatlarına taşı
+          const position = cowModel.object3D.getWorldPosition(new THREE.Vector3());
+          const rotation = cowModel.object3D.getWorldRotation(new THREE.Euler());
+          cowModel.setAttribute('position', `${position.x} ${position.y} ${position.z}`);
+          cowModel.setAttribute('rotation', `${THREE.Math.radToDeg(rotation.x)} ${THREE.Math.radToDeg(rotation.y)} ${THREE.Math.radToDeg(rotation.z)}`);
 
-          // Modeli marker'dan kaldır, dünya koordinatlarında sabitle
-          cowModel.removeAttribute('arjs-anchor');
-          isModelLocked = true;
+          // Marker ile olan bağı kes ve modeli kalıcı yap
+          marker.object3D.remove(cowModel.object3D);
+          document.querySelector('a-scene').object3D.add(cowModel.object3D);
+
+          modelLocked = true;
         }
       });
 
       marker.addEventListener('markerLost', () => {
-        // Marker kaybolduğunda model yok olmamaya devam edecek
+        // Marker kaybolsa bile model artık dünya koordinatlarında kalır
+        if (modelLocked) {
+          cowModel.setAttribute('visible', true); // Model görünür kalmaya devam eder
+        }
       });
     </script>
   </body>
