@@ -2,25 +2,31 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <title>Persistent Object Without Marker Dependency</title>
+    <title>Persistent AR Object</title>
     <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
     <script src="https://cdn.rawgit.com/jeromeetienne/ar.js/2.2.1/aframe/build/aframe-ar.min.js"></script>
     <script>
       AFRAME.registerComponent("markerhandler", {
         init: function () {
-          const marker = this.el;
-          const model = document.querySelector("#model");
+          const marker = this.el; // Marker referansı
+          const model = document.querySelector("#model"); // Model referansı
+          let isModelLocked = false; // Model sabitlenmiş mi?
 
-          // Marker bulunduğunda
           marker.addEventListener("markerFound", () => {
-            if (!model.getAttribute("position").x) {
-              // Marker bulunduğunda modelin pozisyonunu koru
-              const markerPosition = marker.object3D.position;
-              model.setAttribute("position", {
-                x: markerPosition.x,
-                y: markerPosition.y,
-                z: markerPosition.z,
-              });
+            if (!isModelLocked) {
+              // Marker algılandığında, dünya pozisyonunu kaydet
+              const position = marker.object3D.getWorldPosition(new THREE.Vector3());
+              const rotation = marker.object3D.getWorldQuaternion(new THREE.Quaternion());
+
+              // Modeli dünya koordinatlarında sabitle
+              model.object3D.position.copy(position);
+              model.object3D.quaternion.copy(rotation);
+
+              // Marker ile bağlantısını kaldır
+              marker.object3D.remove(model.object3D);
+              document.querySelector("a-scene").object3D.add(model.object3D);
+
+              isModelLocked = true; // Model artık sabitlendi
               model.setAttribute("visible", "true");
             }
           });
@@ -37,7 +43,6 @@
         url="https://basbilir2.github.io/vr1/pattern-marker.patt"
         markerhandler
       >
-        <!-- Marker içindeki modeli devre dışı bırak -->
         <a-entity id="placeholder" position="0 0 0" visible="false"></a-entity>
       </a-marker>
 
@@ -46,7 +51,6 @@
         id="model"
         gltf-model="https://basbilir2.github.io/vr1/cow.glb"
         scale="0.3 0.3 0.3"
-        position="0 0 0"
         visible="false"
       ></a-entity>
 
