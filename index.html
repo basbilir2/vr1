@@ -14,20 +14,20 @@
 
           marker.addEventListener("markerFound", () => {
             if (!isModelLocked) {
-              // Marker algılandığında modelin dünya pozisyonunu al
-              const position = marker.object3D.getWorldPosition(new THREE.Vector3());
-              const rotation = marker.object3D.getWorldQuaternion(new THREE.Quaternion());
+              // Marker algılandığında modelin dünya pozisyonunu ve rotasyonunu al
+              const worldPosition = marker.object3D.getWorldPosition(new THREE.Vector3());
+              const worldRotation = marker.object3D.getWorldQuaternion(new THREE.Quaternion());
 
-              // Modeli dünya sahnesine sabitle
-              model.object3D.position.copy(position);
-              model.object3D.quaternion.copy(rotation);
+              // Modeli dünya pozisyonuna sabitle
+              model.object3D.position.copy(worldPosition);
+              model.object3D.quaternion.copy(worldRotation);
 
-              // Marker ile bağlantıyı kes
+              // Marker ile bağlantısını kes ve sahneye sabit hale getir
               document.querySelector("a-scene").object3D.add(model.object3D);
 
               // Modeli görünür yap
               model.setAttribute("visible", "true");
-              isModelLocked = true; // Model artık sabitlenmiş
+              isModelLocked = true; // Model artık sabitlendi
             }
           });
         },
