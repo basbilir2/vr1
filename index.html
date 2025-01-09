@@ -14,20 +14,20 @@
 
           marker.addEventListener("markerFound", () => {
             if (!isModelLocked) {
-              // Marker algılandığında, dünya pozisyonunu kaydet
+              // Marker algılandığında modelin dünya pozisyonunu al
               const position = marker.object3D.getWorldPosition(new THREE.Vector3());
               const rotation = marker.object3D.getWorldQuaternion(new THREE.Quaternion());
 
-              // Modeli dünya koordinatlarında sabitle
+              // Modeli dünya sahnesine sabitle
               model.object3D.position.copy(position);
               model.object3D.quaternion.copy(rotation);
 
-              // Marker ile bağlantısını kaldır
-              marker.object3D.remove(model.object3D);
+              // Marker ile bağlantıyı kes
               document.querySelector("a-scene").object3D.add(model.object3D);
 
-              isModelLocked = true; // Model artık sabitlendi
+              // Modeli görünür yap
               model.setAttribute("visible", "true");
+              isModelLocked = true; // Model artık sabitlenmiş
             }
           });
         },
@@ -43,6 +43,7 @@
         url="https://basbilir2.github.io/vr1/pattern-marker.patt"
         markerhandler
       >
+        <!-- Marker içindeki placeholder -->
         <a-entity id="placeholder" position="0 0 0" visible="false"></a-entity>
       </a-marker>
 
