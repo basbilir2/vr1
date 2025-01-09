@@ -2,35 +2,33 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <title>Persistent AR Object</title>
+    <title>Persistent Object at Marker Position</title>
     <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
-    <script src="https://cdn.rawgit.com/jeromeetienne/ar.js/2.2.1/aframe/build/aframe-ar.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/jeromeetienne/ar.js/aframe/build/aframe-ar.min.js"></script>
     <script>
       AFRAME.registerComponent("markerhandler", {
         init: function () {
           const marker = this.el; // Marker referansı
           const model = document.querySelector("#model"); // Model referansı
-          let isModelLocked = false; // Model sabitlenmiş mi?
+          let modelLocked = false; // Modelin marker ile bağı koparıldı mı?
 
           marker.addEventListener("markerFound", () => {
-            if (!isModelLocked) {
-              // Markerın dünya koordinatlarını ve rotasyonunu al
-              const worldPosition = new THREE.Vector3();
-              const worldQuaternion = new THREE.Quaternion();
+            if (!modelLocked) {
+              // Markerın dünya pozisyonunu ve rotasyonunu al
+              const worldPosition = marker.object3D.getWorldPosition(new THREE.Vector3());
+              const worldQuaternion = marker.object3D.getWorldQuaternion(new THREE.Quaternion());
 
-              marker.object3D.getWorldPosition(worldPosition);
-              marker.object3D.getWorldQuaternion(worldQuaternion);
-
-              // Modeli dünya koordinatlarında sabitle
+              // Modeli dünya pozisyonunda sabitle
               model.object3D.position.copy(worldPosition);
               model.object3D.quaternion.copy(worldQuaternion);
 
-              // Marker ile bağlantısını tamamen kopar
+              // Marker ile bağı kopar
+              model.object3D.parent = null;
               document.querySelector("a-scene").object3D.add(model.object3D);
 
               // Modeli görünür yap
               model.setAttribute("visible", "true");
-              isModelLocked = true; // Model artık sabitlendi
+              modelLocked = true; // Artık marker bağımsız
             }
           });
         },
